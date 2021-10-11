@@ -58,7 +58,7 @@ public class DemoSecurityConfigure extends WebSecurityConfigurerAdapter {
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -73,22 +73,36 @@ public class DemoSecurityConfigure extends WebSecurityConfigurerAdapter {
                     .oauth2Login()
                     .loginPage("/showMyLoginPage")
                     .userInfoEndpoint()
-                    .userService(oauthUserService).and().successHandler(oAuth2LoginSuccessHandler);
-
-        http.oauth2Login()
-                .loginPage("/login")
-                .userInfoEndpoint()
-                .userService(oauthUserService)
-                .and()
-                .successHandler((request, response, authentication) -> {
-
-                    CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                    userService.processOAuthPostLogin(oauthUser.getEmail());
-                    System.out.println("HAHAH");
-                    System.out.println(oauthUser.getEmail());
-//                        System.out.println("Demo");
-//                        System.out.println((char[]) oauthUser.getAttribute("user"));
-                    response.sendRedirect("/welcome");
-                });
+                    .userService(oauthUserService).and().successHandler(new AuthenticationSuccessHandler() {
+                        @Override
+                        public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                            CustomOAuth2User oAuth2User  = (CustomOAuth2User) authentication.getPrincipal();
+                            userService.processOAuthPostLogin(oAuth2User.getName());
+                            System.out.println(oAuth2User.getName());
+                            response.sendRedirect("/");
+                        }
+                    }).and().oauth2Login().loginPage("/showMyLoginPage").userInfoEndpoint().userService(oauthUserService).and().successHandler(new AuthenticationSuccessHandler() {
+                        @Override
+                        public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                            CustomOAuth2User oAuth2User  = (CustomOAuth2User) authentication.getPrincipal();
+                            userService.processOAuthPostLogin2(oAuth2User.getName());
+                            System.out.println(oAuth2User.getName());
+                            response.sendRedirect("/");
+                        }
+                    });
+//
+//        http.oauth2Login()
+//                .loginPage("/login")
+//                .userInfoEndpoint()
+//                .userService(oauthUserService)
+//                .and()
+//                .successHandler(new AuthenticationSuccessHandler() {
+//                    @Override
+//                    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+//                        CustomOAuth2User oAuth2User  = (CustomOAuth2User) authentication.getPrincipal();
+//                        userService.processOAuthPostLogin(oAuth2User.getName());
+//                        response.sendRedirect("/welcome");
+//                    }
+//                });
     }
 }

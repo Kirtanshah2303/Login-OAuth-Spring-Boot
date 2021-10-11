@@ -38,6 +38,13 @@
                 </div>
                 <div><p>OR</p></div>
 
+				<div>
+					<h4><a href="/oauth2/authorization/github">Login with GitHub</a></h4>
+				</div>
+				<div><p>OR</p></div>
+
+
+
 				<div style="padding-top: 30px" class="panel-body">
 
 					<!-- Login Form -->

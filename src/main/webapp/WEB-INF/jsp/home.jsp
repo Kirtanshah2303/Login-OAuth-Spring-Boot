@@ -19,7 +19,7 @@ Welcome to the luv2code company home page!
 
 <p>
     <sec:authorize access="isAuthenticated()">
-    User: <security:authentication property="principal.username" />
+    User: <security:authentication property="principal.name" />
     <br><br>
     Role(s): <security:authentication property="principal.authorities" />
     </sec:authorize>

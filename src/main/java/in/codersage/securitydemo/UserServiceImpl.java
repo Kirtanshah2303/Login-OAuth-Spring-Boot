@@ -25,12 +25,26 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
 
+    @Override
     public void processOAuthPostLogin(String username) {
         User existUser = userRepository.findUserByUsername(username);
         if (existUser == null) {
             User newUser = new User();
             newUser.setUsername(username);
             newUser.setProvider(provider.GOOGLE);
+            System.out.println("Demo");
+            userRepository.save(newUser);
+        }
+
+    }
+
+    @Override
+    public void processOAuthPostLogin2(String username) {
+        User existUser = userRepository.findUserByUsername(username);
+        if (existUser == null) {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setProvider(provider.GITHUB);
             System.out.println("Demo");
             userRepository.save(newUser);
         }
